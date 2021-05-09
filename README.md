@@ -21,6 +21,12 @@ Statement "dogs" (02) Statement (01 = "Kids are talking by the door", 02 = "Dogs
 
 Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wav
 
+## Example noisy data subset:
+81 noises for the following:
+<br>
+5 emotions- strong intensity -dog statement - 1 rep - 1 actor
+<br>
+5 emotions - calm, happy, sad, angry, suprised
 
 
 ## Integrating Colab with Github
