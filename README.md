@@ -28,6 +28,9 @@ Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wa
 <br>
 The 5 emotions: calm, happy, sad, angry, suprised
 
+## Architecure we are currently looking at:
+1. discriminator: TBD
+2. generator : CNN + RNN (https://ieeexplore.ieee.org/abstract/document/7820699 )
 
 ## Integrating Colab with Github
 The following link shows all the available <code>.ipynb</code> files from our repo that can be opened by colab:
