@@ -26,7 +26,7 @@ Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wa
 <br>
 5 emotions- strong intensity -dog statement - 1 rep - 1 actor
 <br>
-The 5 emotions: calm, happy, sad, angry, suprised
+The 5 emotions: calm (02), happy(03), sad(04), angry(06), suprised(08)
 
 ## Architecure we are currently looking at:
 1. discriminator: TBD
