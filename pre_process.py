@@ -62,20 +62,26 @@ def pre_pad(samples, max_sample):
 
   return padded_sample
 
-def load_samples(padding = True, truncating = True, normal = True, duration = 2):
+def load_samples(model_folder,padding = True, truncating = True, normal = True,statement_type = [1,2] ,duration = 2):
   # load samples
   X = []
   y = []
 
-  for folder_name in glob.glob('./Audio_Speech_Actors_01-24/*'):
+  for folder_name in glob.glob(model_folder + '/Audio_Speech_Actors_01-24/*'):
     for actor_folder in glob.glob(folder_name + '/*'):
       for sample_path in glob.glob(actor_folder + '/*'):
         
         sample_name = sample_path.split('/')[-1]
         file_format = sample_name.split('.')[-1]
 
-        if file_format != 'wav' or sample_name[:2] not in target_map or sample_name[3:5] == '01' or sample_name[6:8] == '01':
+        if file_format != 'wav' or sample_name[:2] not in target_map or sample_name[3:5] == '01':
           continue
+      
+        if sample_name[6:8] == '01' and 1 not in statement_type:
+            continue
+        
+        if sample_name[6:8] == '02' and 2 not in statement_type:
+            continue
 
         sample, sampling_rate = librosa.load(sample_path, sr = 16000)
         
