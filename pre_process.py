@@ -10,6 +10,23 @@ Original file is located at
 import numpy as np
 import librosa
 import matplotlib.pyplot as plt
+import glob
+
+# produce emotion label
+
+# 0 - calm; 1 - happy; 2 - sad; 3 - angry; 4 - surprised
+target_map = {'02':0,'03':1,'04':2,'05':3,'08':4}
+
+def target_generation(file_name):
+  labels = file_name.split('.')[0].split('-')
+  emotion = labels[0]
+
+  if emotion not in target_map:
+    return None
+
+  return target_map[emotion]
+
+
 
 # mel_decomposition
 def mel_spectral_decomposition(sample,sampling_rate, title = ' title placeholder', visualise = False):
