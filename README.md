@@ -37,3 +37,6 @@ The following link shows all the available <code>.ipynb</code> files from our re
 https://colab.research.google.com/github/JordanFoss/STAT3007_Project
 
 More details can be found in <code>colab-github-demo.ipynb</code>
+
+##Presentation Slides
+https://docs.google.com/presentation/d/1QSJ8ocBKJbPoVOcoXiKNEMI355Wn7ljikF_xhB7_KaM/edit#slide=id.p
