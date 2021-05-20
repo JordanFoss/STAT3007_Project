@@ -29,8 +29,9 @@ Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wa
 The 5 emotions: calm (02), happy(03), sad(04), angry(05), suprised(08)
 
 ## Architecure we are currently looking at:
-1. discriminator: TBD
-2. generator : CNN + RNN (https://ieeexplore.ieee.org/abstract/document/7820699 )
+1. Compressed feature extractor via Denosing autoencoder + classifying network
+2. baseline model: pure CNN (trained on clean data or augemented nosiy data)
+3. Attempting if have time: CNN + RNN (https://ieeexplore.ieee.org/abstract/document/7820699 )
 
 ## Integrating Colab with Github
 The following link shows all the available <code>.ipynb</code> files from our repo that can be opened by colab:
