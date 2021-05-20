@@ -21,6 +21,14 @@ Statement "dogs" (02) Statement (01 = "Kids are talking by the door", 02 = "Dogs
 
 Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wav
 
+## Pre-process steps:
+1. load audio with downsampled sampling rate 16000Hz
+2. truncate radio slience before and after each audio clip with a fixed, hand-crafted threshold
+3. normalise amplitude waveform with 0 mean and unit variance
+4. pick a certain initial duration of the audio sample (if shorter than the sampling duration, pre-pad the sample with zeros)
+5. compute mel-spectrogram (amplitude -> power spectrum -> log-spectrogram -> mel-scaling)
+6. train/test split
+
 ## Example noisy data subset:
 81 noises for the following:
 <br>
@@ -29,8 +37,9 @@ Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wa
 The 5 emotions: calm (02), happy(03), sad(04), angry(05), suprised(08)
 
 ## Architecure we are currently looking at:
-1. discriminator: TBD
-2. generator : CNN + RNN (https://ieeexplore.ieee.org/abstract/document/7820699 )
+1. Compressed feature extractor via Denosing autoencoder + classifying network
+2. baseline model: pure CNN (trained on clean data or augemented nosiy data)
+3. Attempting if have time: CNN + RNN (https://ieeexplore.ieee.org/abstract/document/7820699 )
 
 ## Integrating Colab with Github
 The following link shows all the available <code>.ipynb</code> files from our repo that can be opened by colab:
