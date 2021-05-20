@@ -21,6 +21,14 @@ Statement "dogs" (02) Statement (01 = "Kids are talking by the door", 02 = "Dogs
 
 Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wav
 
+## Pre-process steps:
+1. load audio with downsampled sampling rate 16000Hz
+2. truncate radio slience before and after each audio clip with a fixed, hand-crafted threshold
+3. normalise amplitude waveform with 0 mean and unit variance
+4. pick a certain initial duration of the audio sample (if shorter than the sampling duration, pre-pad the sample with zeros)
+5. compute mel-spectrogram (amplitude -> power spectrum -> log-spectrogram -> mel-scaling)
+6. train/test split
+
 ## Example noisy data subset:
 81 noises for the following:
 <br>
