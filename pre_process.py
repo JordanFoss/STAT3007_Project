@@ -143,6 +143,48 @@ def pre_pad(samples, max_sample):
     return padded_sample
 
 
+
+def data_gen(sample, sampling_rate ,duration):
+    '''
+    This function generates the data for deep learning uses.
+    It pre-processes each raw audio sample by:
+        1. truncate silence
+        2. normalise waveform
+        3. pre-pad or crop to duration
+        4. compute  mel-spectrogram
+
+    Parameters
+    ----------
+    sample : numpy.array
+        audio samples
+    sampling_rate : int
+        sampling rate of audio
+    duration : int
+        duration to keep or pre-pad to
+
+    Returns
+    -------
+    spectrogram : numpy.ndarray
+        mel-spectrogram of samples
+
+    '''
+    
+    truncated_sample = truncate_silence(sample)
+    truncated_sample = amp_normalisation(truncated_sample)
+    
+    total_duration = truncated_sample.shape[0]
+    diff_duration = total_duration - (duration * sampling_rate)
+    
+    padded_sample = truncated_sample
+    if diff_duration < 0:
+        padded_sample = pre_pad(truncated_sample, int(duration * sampling_rate))
+      
+    spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
+
+    return spectrogram
+
+
+
 def load_samples(model_folder,sampling_rate = 16000,
                  padding = True, 
                  truncating = True, 
@@ -191,9 +233,11 @@ def load_samples(model_folder,sampling_rate = 16000,
               emotion, intensity, repetition, statement, actor = tuple(sample_name.split('-')[:5])
         
               
+              # skip unwanted emotions and normal intensity
               if emotion not in target_map or intensity == '01':
                   continue
             
+              # skip unwanted statements
               if statement == '01' and 1 not in statement_type:
                   continue
               
@@ -202,19 +246,24 @@ def load_samples(model_folder,sampling_rate = 16000,
         
               sample, sampling_rate = librosa.load(sample_path, sr = sampling_rate)
               
+              # truncate the silence of the audio sample
               truncated_sample = sample
         
               if truncating:
                   truncated_sample = truncate_silence(sample)
               
-        
+              
+              # check the difference between the maximum duration and the sample duration
               total_duration = truncated_sample.shape[0]
               diff_duration = total_duration - (duration * sampling_rate)
         
+              #normalisation
               if normal:
                   truncated_sample = amp_normalisation(truncated_sample)
               
         
+              #pre pading the sample with zeros if it is shorter than the maximum duration
+              # else, include only the first 2 seconds of it
               padded_sample = truncated_sample
         
               if padding and diff_duration < 0:
