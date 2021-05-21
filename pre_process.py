@@ -11,6 +11,7 @@ This file contains several helper funtion for pre-processing
 
 import numpy as np
 import librosa
+from librosa.effects import split
 import matplotlib.pyplot as plt
 import glob
 
@@ -94,6 +95,29 @@ def truncate_silence(sample):
     
     start = speech[0][0]
     end = speech[0][-1]
+    
+    return sample[start:end+1]
+
+def truncate_silence_ex(sample):
+    '''
+    Truncates silence timesteps before and after the speech 
+    This one uses librosa function instead of our own function
+    
+
+    Parameters
+    ----------
+    sample : numpy.array
+        audio samples
+
+    Returns
+    -------
+    truncated_sample: numpy.array
+        truncated sample
+
+    '''
+    speech = split(sample, 20)
+    start = speech[0][0]
+    end = speech[-1][-1]
     
     return sample[start:end+1]
 
