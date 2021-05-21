@@ -1,0 +1,18 @@
+Number Filters - 14 : final loss: 0.0003290381282567978
+Kernel Shape (2, 2)- accuracy:0.7405063509941101
+Number Filters - 14 : final loss: 0.008748405613005161
+Kernel Shape (2, 3)- accuracy:0.796202540397644
+Number Filters - 14 : final loss: 0.0019013213459402323
+Kernel Shape (2, 4)- accuracy:0.7101265788078308
+Number Filters - 14 : final loss: 0.0013219828251749277
+Kernel Shape (3, 2)- accuracy:0.7139240503311157
+Number Filters - 14 : final loss: 0.0002901270054280758
+Kernel Shape (3, 3)- accuracy:0.7189873456954956
+Number Filters - 14 : final loss: 0.0002789639984257519
+Kernel Shape (3, 4)- accuracy:0.6518987417221069
+Number Filters - 14 : final loss: 0.0010080131469294429
+Kernel Shape (4, 2)- accuracy:0.6924050450325012
+Number Filters - 14 : final loss: 0.05443291366100311
+Kernel Shape (4, 3)- accuracy:0.6708860993385315
+Number Filters - 14 : final loss: 0.009896845556795597
+Kernel Shape (4, 4)- accuracy:0.4873417615890503
