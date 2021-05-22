@@ -3,7 +3,7 @@ import torch.nn as nn
 # input: 128xtime_steps
 #output: 30x14 for 32 filters
 class ConvNet(nn.Module):
-    def __init__(self, contain_linear = False, filter_num = 16, kernel_size = (2,3)):
+    def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
         super(ConvNet, self).__init__()
         self.flatten = nn.Flatten()
         self.conv1 = nn.Conv2d(1, filter_num, kernel_size = (2,3))
