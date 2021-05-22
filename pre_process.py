@@ -19,7 +19,7 @@ import torch
 # produce emotion label
 
 # 0 - calm; 1 - happy; 2 - sad; 3 - angry; 4 - surprised
-target_map = {'02':0,'03':1,'04':2,'05':3,'08':4}
+target_map = {'01':0,'02':1,'03':2,'04':3,'05':4,'06':5,'07':6,'08':7}
 
 def load_noisy_samples(max_sample, padding = True, truncating = True, normal = True, duration = None):
   # load samples
@@ -379,7 +379,7 @@ def load_samples(model_folder,sampling_rate = 16000,
         
               
               # skip unwanted emotions and normal intensity
-              if emotion not in target_map or intensity == '01':
+              if emotion not in target_map:
                   continue
             
               # skip unwanted statements
