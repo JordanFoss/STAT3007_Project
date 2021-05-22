@@ -43,7 +43,100 @@ class DatasetWrapper(Dataset):
       
       def get_data(self):
           return self.X, self.y
+      
+def load_samples(model_folder,sampling_rate = 16000,
+                 padding = True, 
+                 truncating = True, 
+                 normal = True,
+                 statement_type = [1,2] ,duration = 2):
+    '''
+    Every sample in the dataset and pre-process it. 
+    NOTE: this is only applicable for clean dataset at the moment
 
+    Parameters
+    ----------
+    model_folder : str
+        path to the project folder. e.g. .../STAT3007_Project
+    sr : int, optional
+        sampling_rate. The default is 16000.
+    padding : boolean, optional
+        Whether to apply padding. The default is True.
+    truncating : boolean, optional
+        Wether to apply truncation. The default is True.
+    normal : boolean, optional
+        Wether to apply amplitude normalisation. The default is True.
+    statement_type : list, optional
+        statement type to include. 1 - dog, 2 - kids. The default is [1,2].
+    duration : int, optional
+        maximum duration of the audio to include. The default is 2.
+
+    Returns
+    -------
+    X : list
+        complete set of samples in a list. Each element is an array with the shape (freq,duration)
+    y : list
+        complete set of targets corresponding to the samples. Its values maps the 5 emotions to 0-4
+
+    '''
+    
+    # load samples
+    X = []
+    y = []
+    
+    for folder_name in glob.glob(model_folder + '/Audio_Speech_Actors_01-24/*'):
+        for actor_folder in glob.glob(folder_name + '/*'):
+            for sample_path in glob.glob(actor_folder + '/*.wav'):
+              
+              sample_name = sample_path.split('/')[-1]
+              
+              emotion, intensity, repetition, statement, actor = tuple(sample_name.split('-')[:5])
+        
+              
+              # skip unwanted emotions and normal intensity
+              if emotion not in target_map:
+                  continue
+            
+              # skip unwanted statements
+              if statement == '01' and 1 not in statement_type:
+                  continue
+              
+              if statement == '02' and 2 not in statement_type:
+                  continue
+        
+              sample, sampling_rate = librosa.load(sample_path, sr = sampling_rate)
+              
+              # truncate the silence of the audio sample
+              truncated_sample = sample
+        
+              if truncating:
+                  truncated_sample = truncate_silence(sample)
+              
+              
+              # check the difference between the maximum duration and the sample duration
+              total_duration = truncated_sample.shape[0]
+              diff_duration = total_duration - (duration * sampling_rate)
+        
+              #normalisation
+              if normal:
+                  truncated_sample = amp_normalisation(truncated_sample)
+              
+        
+              #pre pading the sample with zeros if it is shorter than the maximum duration
+              # else, include only the first 2 seconds of it
+              padded_sample = truncated_sample
+        
+              if padding and diff_duration < 0:
+                  padded_sample = pre_pad(truncated_sample, int(duration * sampling_rate))
+                
+        
+              spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
+        
+              target = target_generation(sample_name)
+        
+              X.append(spectrogram)
+              y.append(target)
+    
+    return X, y
 
 def load_noisy_samples(model_folder):
     # load samples
