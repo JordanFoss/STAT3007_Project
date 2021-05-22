@@ -3,7 +3,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch
 import numpy as np
-from pre_processprocess import *
+from pre_process import *
 
 
 class ConvNet(nn.Module):
