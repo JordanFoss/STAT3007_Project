@@ -19,55 +19,10 @@ import torch
 # produce emotion label
 
 # 0 - calm; 1 - happy; 2 - sad; 3 - angry; 4 - surprised
-target_map = {'01':0,'02':1,'03':2,'04':3,'05':4,'06':5,'07':6,'08':7}
+target_map = {'02':0,'03':1,'04':2,'05':3,'08':4}
 
-def load_noisy_samples(max_sample, padding = True, truncating = True, normal = True, duration = None):
-  # load samples
-  X = []
-  y = []
-
-  for sample_path in glob.glob('./sample-noisy-speech-actor-11/*.wav'):
-    sample_name = sample_path.split('/')[-1]
-
-    sample, sampling_rate = librosa.load(sample_path, sr = 16000)
-    
-    truncated_sample = sample
-
-    if truncating:
-      truncated_sample = truncate_silence(sample)
-    
-    diff_duration = None
-    if duration != None:
-      total_duration = truncated_sample.shape[0]
-      diff_duration = total_duration - (duration * sampling_rate)
-
-    if normal:
-      truncated_sample = amp_normalisation(truncated_sample)
-    
-
-    padded_sample = truncated_sample
-
-    if padding:
-      if diff_duration == None:
-
-        padded_sample = pre_pad(truncated_sample, max_sample)
-      
-      elif diff_duration < 0:
-        padded_sample = pre_pad(truncated_sample, int(duration * sampling_rate))
-      
-
-    if duration != None:
-      spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
-    else:
-      spectrogram = mel_spectral_decomposition(padded_sample, sampling_rate)
-    
-    target = target_generation(sample_name)
-
-    if target != None:
-      X.append(spectrogram)
-      y.append(target)
-  
-  return X, y
+#Full Target Map
+#target_map = {'01':0,'02':1,'03':2,'04':3,'05':4,'06':5,'07':6,'08':7}
 
 def find_min_max():
   min_time = 41241
