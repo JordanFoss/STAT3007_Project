@@ -1,7 +1,5 @@
 import torch.nn as nn
-# convolutional net
-# input: 128xtime_steps
-#output: 30x14 for 32 filters
+from torch.utils.data import Dataset
 class ConvNet(nn.Module):
     def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
         super(ConvNet, self).__init__()
@@ -36,3 +34,24 @@ class ConvNet(nn.Module):
       if inspect_feature:
         return first_layer,conv_x,output_x
       return output_x
+
+
+class DatasetWrapper(Dataset):
+  def __init__(self, X, y):
+    self.X, self.y = X, y
+
+  def __len__(self):
+    return len(self.X)
+
+  def __getitem__(self, idx):
+    return self.X[idx], self.y[idx]
+  
+  def change_type(self, dtype):
+
+    return DatasetWrapper(self.X.type(dtype),self.y.type(dtype))
+  
+  def dataset(self):
+    return DatasetWrapper(self.X,self.y)
+  
+  def get_data(self):
+    return self.X, self.y
