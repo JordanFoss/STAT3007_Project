@@ -3,7 +3,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch
 import numpy as np
-from preprocess import *
+from pre_processprocess import *
 
 
 class ConvNet(nn.Module):
@@ -41,26 +41,6 @@ class ConvNet(nn.Module):
         return first_layer,conv_x,output_x
       return output_x
 
-
-class DatasetWrapper(Dataset):
-  def __init__(self, X, y):
-    self.X, self.y = X, y
-
-  def __len__(self):
-    return len(self.X)
-
-  def __getitem__(self, idx):
-    return self.X[idx], self.y[idx]
-  
-  def change_type(self, dtype):
-
-    return DatasetWrapper(self.X.type(dtype),self.y.type(dtype))
-  
-  def dataset(self):
-    return DatasetWrapper(self.X,self.y)
-  
-  def get_data(self):
-    return self.X, self.y
 
 def classification(prediction):
   classified = torch.argmax(prediction, dim = 1)
