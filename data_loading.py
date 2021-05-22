@@ -20,8 +20,30 @@ import matplotlib.pyplot as plt
 import glob
 from torch.utils.data import DataLoader, Dataset, random_split
 import torch
+from sklearn.model_selection import train_test_split
 
 from pre_process import *
+
+class DatasetWrapper(Dataset):
+      def __init__(self, X, y):
+          self.X, self.y = X, y
+    
+      def __len__(self):
+          return len(self.X)
+    
+      def __getitem__(self, idx):
+          return self.X[idx], self.y[idx]
+      
+      def change_type(self, dtype):
+    
+          return DatasetWrapper(self.X.type(dtype),self.y.type(dtype))
+      
+      def dataset(self):
+          return DatasetWrapper(self.X,self.y)
+      
+      def get_data(self):
+          return self.X, self.y
+
 
 def load_noisy_samples(model_folder):
     # load samples
@@ -45,59 +67,6 @@ def load_noisy_samples(model_folder):
               y.append(target)
     
     return X, y
-
-class DatasetWrapper(Dataset):
-      def __init__(self, X, y):
-          self.X, self.y = X, y
-    
-      def __len__(self):
-          return len(self.X)
-    
-      def __getitem__(self, idx):
-          return self.X[idx], self.y[idx]
-      
-      def change_type(self, dtype):
-    
-          return DatasetWrapper(self.X.type(dtype),self.y.type(dtype))
-      
-      def dataset(self):
-          return DatasetWrapper(self.X,self.y)
-      
-      def get_data(self):
-          return self.X, self.y
-
-
-def train_test_gen(X,y, train_ratio = 0.7, seed = 10):
-    '''
-    Generates training/test datasets
-
-    Parameters
-    ----------
-    X : list
-        list of mel-spectrograms
-    y : list
-        list of emotion labels
-    train_ratio : float, optional
-        ratio of samples for training. The default is 0.7.
-    seed : int, optional
-        random generator seed. The default is 10.
-
-    Returns
-    -------
-    data_test : Dataset.Subset
-        test dataset
-    data_train : Dataset.Subset
-        train dataset
-
-    '''
-      
-    data = DatasetWrapper(X,y)
-    train_size = int(X.shape[0] * train_ratio)
-    test_size = X.shape[0] - train_size
-      
-    data_test, data_train = random_split(data,[test_size,train_size], generator = torch.Generator().manual_seed(seed))
-      
-    return data_test, data_train
 
 
 def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
@@ -123,9 +92,13 @@ def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
     '''
     data_sets = []
     for i in range(len(train_ratio)):
-        data_test, data_train = train_test_gen(X,y, train_ratio[i], seed[i])
+        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_ratio[i], random_state = seed[i])
+        
+        data_train = DatasetWrapper(X_train, y_train)
+        data_test = DatasetWrapper(X_test, y_test)
+        
         data_sets.append((data_train,data_test))
-        X,y = data_test.dataset.get_data()
+        X,y = X_test,y_test
         
     return data_sets
         
