@@ -14,11 +14,53 @@ import librosa
 from librosa.effects import split
 import matplotlib.pyplot as plt
 import glob
+import torch
 
 # produce emotion label
 
 # 0 - calm; 1 - happy; 2 - sad; 3 - angry; 4 - surprised
 target_map = {'02':0,'03':1,'04':2,'05':3,'08':4}
+
+# find maximum and minimum duration
+def find_min_max():
+  min_time = 41241
+  max_time = 0
+  min_sample = 0
+  max_sample = 0
+  for folder_name in glob.glob('./Audio_Speech_Actors_01-24/*'):
+    for actor_folder in glob.glob(folder_name + '/*'):
+      for sample_path in glob.glob(actor_folder + '/*'):
+        sample_name = sample_path.split('/')[-1]
+        file_format = sample_name.split('.')[-1]
+
+        # we want only audio files, selected emotions and strong intensity
+        if file_format != 'wav' or sample_name[:2] not in target_map or sample_name[3:5] == '01' or sample_name[6:8] == '01':
+          continue
+        
+        sample, sampling_rate = librosa.load(sample_path, sr = None)
+
+        sample = truncate_silence(sample)
+
+        sampling_time = sample.shape[0]/sampling_rate
+
+        if sampling_time < min_time:
+          min_time = sampling_time
+          min_sample = sample.shape[0]
+          min_file = sample_name
+
+        if sampling_time > max_time:
+          max_time = sampling_time
+          max_sample = sample.shape[0]
+          max_file = sample_name
+
+  return min_time, max_time, min_sample, max_sample, min_file, max_file
+
+def spec_normlisation(spectrogram):
+  mean = torch.mean(spectrogram)
+  std = torch.std(spectrogram)
+
+  norm = (spectrogram - mean)/std
+  return norm
 
 
 def target_generation(file_name):
