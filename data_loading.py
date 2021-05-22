@@ -90,9 +90,6 @@ def train_test_gen(X,y, train_ratio = 0.7, seed = 10):
         train dataset
 
     '''
-    X = torch.tensor(X)
-    X = X.reshape(X.shape[0],1,X.shape[1],X.shape[2])
-    y = torch.tensor(y)
       
     data = DatasetWrapper(X,y)
     train_size = int(X.shape[0] * train_ratio)
@@ -126,7 +123,7 @@ def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
     '''
     data_sets = []
     for i in range(len(train_ratio)):
-        data_test, data_train = train_test_gen(X,y, train_ratio[0], seed[0])
+        data_test, data_train = train_test_gen(X,y, train_ratio[i], seed[i])
         data_sets.append((data_train,data_test))
         X,y = data_test.dataset.get_data()
         
