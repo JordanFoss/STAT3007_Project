@@ -1,6 +1,10 @@
 import torch.nn as nn
-from torch.utils.data import Dataset
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
 import torch
+import numpy as np
+
+
 class ConvNet(nn.Module):
     def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
         super(ConvNet, self).__init__()
@@ -68,3 +72,47 @@ def accuracy(y_pred, y_test):
 
   accuracy_percent = torch.count_nonzero(accuracy)/accuracy.shape[0]
   return accuracy_percent.item()
+
+def train_model(data_train, data_test, net, loss, nepoch ,lr = 0.01, batch_size = -1, use_cuda = False, print_output = True):
+
+  # appropriate data type for CPU or GPU
+  device = None
+  if use_cuda and torch.cuda.is_available():
+    dtype = torch.cuda.FloatTensor
+    device = torch.device("cuda")
+    net = net.to(device)
+  else:
+    dtype = torch.FloatTensor
+
+  optimizer = optim.SGD(net.parameters(), lr = lr)
+  data_train = data_train.dataset.change_type(dtype)
+  data_test = data_test.dataset.change_type(dtype)
+
+  data_loader = DataLoader(data_train, batch_size = batch_size, shuffle = True)
+
+  for epoch in range(nepoch):
+    for X_batch, y_batch in data_loader:
+      y_batch = y_batch.type(torch.LongTensor)
+      if use_cuda and device != None:
+        X_batch = X_batch.to(device)
+        y_batch = y_batch.to(device)
+        y_batch = y_batch.type(torch.cuda.LongTensor)
+
+      optimizer.zero_grad()
+
+      # since all our values are negative, we convert them to positive
+
+
+      pred = net(X_batch)
+      Rn = loss(pred, y_batch)
+      Rn.backward()
+      optimizer.step()
+
+    if print_output:
+      print('epoch:', epoch)
+      print('loss:',Rn.item())
+      print('------------')
+
+  print('final loss:', Rn.item())
+
+  return net
