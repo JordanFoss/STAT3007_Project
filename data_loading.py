@@ -93,7 +93,6 @@ def train_test_gen(X,y, train_ratio = 0.7, seed = 10):
     X = torch.tensor(X)
     X = X.reshape(X.shape[0],1,X.shape[1],X.shape[2])
     y = torch.tensor(y)
-    y = y.reshape(y.shape[0],1,y.shape[1],y.shape[2])
       
     data = DatasetWrapper(X,y)
     train_size = int(X.shape[0] * train_ratio)
