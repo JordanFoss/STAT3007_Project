@@ -1,5 +1,6 @@
 import torch.nn as nn
 from torch.utils.data import Dataset
+import torch
 class ConvNet(nn.Module):
     def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
         super(ConvNet, self).__init__()
@@ -55,3 +56,15 @@ class DatasetWrapper(Dataset):
   
   def get_data(self):
     return self.X, self.y
+
+def classification(prediction):
+  classified = torch.argmax(prediction, dim = 1)
+  return classified
+
+def accuracy(y_pred, y_test):
+  class_pred = classification(y_pred)
+
+  accuracy = class_pred == y_test
+
+  accuracy_percent = torch.count_nonzero(accuracy)/accuracy.shape[0]
+  return accuracy_percent.item()
