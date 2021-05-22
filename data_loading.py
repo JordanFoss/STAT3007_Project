@@ -41,7 +41,7 @@ def load_noisy_samples(model_folder):
               
               target = target_generation(sample_name)
         
-              X.append(spectrogram)
+              X.append(mel_spectrogram)
               y.append(target)
     
     return X, y
