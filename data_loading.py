@@ -94,7 +94,7 @@ def load_samples(model_folder,sampling_rate = 16000,
         
               
               # skip unwanted emotions and normal intensity
-              if emotion not in target_map and intesity == '01':
+              if emotion not in target_map and intensity == '01':
                   continue
             
               # skip unwanted statements
