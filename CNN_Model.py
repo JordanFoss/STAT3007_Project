@@ -24,7 +24,7 @@ class ConvNet(nn.Module):
         if contain_linear:
           self.linear = nn.Sequential(
               nn.Linear(24*32*14, 1024),
-              nn.Linear(1024, 8),
+              nn.Linear(1024, 5),
           )
 
     def forward(self, x, inspect_feature = False):
