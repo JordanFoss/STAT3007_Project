@@ -280,6 +280,8 @@ def jordan_gen(sample, sampling_rate ,duration):
     padded_sample = truncated_normal
     if diff_duration < 0:
         padded_sample = pre_pad(truncated_normal, int(duration * sampling_rate))
+    else:
+        padded_sample = padded_sample[:int(sampling_rate * duration)]
       
     spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
 
