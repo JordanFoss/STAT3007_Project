@@ -94,7 +94,7 @@ def load_samples(model_folder,sampling_rate = 16000,
         
               
               # skip unwanted emotions and normal intensity
-              if emotion not in target_map:
+              if emotion not in target_map and intesity == '01':
                   continue
             
               # skip unwanted statements
@@ -144,7 +144,6 @@ def load_samples(model_folder,sampling_rate = 16000,
                   padded_sample = torch.tensor(padded_sample)
                   padded_sample = nosify(padded_sample, colour = color)
                   padded_sample = padded_sample.detach().numpy()
-                  print("Here")
               spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
         
               target = target_generation(sample_name)
