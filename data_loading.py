@@ -141,7 +141,9 @@ def load_samples(model_folder,sampling_rate = 16000,
                         color = NoiseColour.Blue
                   else:
                         color = NoiseColour.Pink
+                  padded_sample = torch.tensor(padded_sample)
                   padded_sample = nosify(padded_sample, colour = color)
+                  padded_sample = padded_sample.detach().numpy()
                   print("Here")
               spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
         
