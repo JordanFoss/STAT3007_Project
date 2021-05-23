@@ -15,6 +15,7 @@ from librosa.effects import split
 import matplotlib.pyplot as plt
 import glob
 import torch
+import colorednoise as cn
 
 # produce emotion label
 
@@ -23,6 +24,24 @@ target_map = {'02':0,'03':1,'04':2,'05':3,'08':4}
 
 #Full Target Map
 #target_map = {'01':0,'02':1,'03':2,'04':3,'05':4,'06':5,'07':6,'08':7}
+
+class NoiseColour:
+  White = 0
+  Violet = -2
+  Blue = -1
+  Pink = 1
+  Brown = 2
+
+def nosify(samples, noise_level = 1, colour = NoiseColour.White):
+  if colour == NoiseColour.White:
+    noise = torch.randn_like(samples)
+  else:
+    noise = torch.from_numpy(cn.powerlaw_psd_gaussian(exponent = colour, size = samples.shape[1])).float()
+
+  scaled_noise = noise * torch.mean(torch.abs(samples)) * noise_level
+  
+  noisy_samples = samples + scaled_noise
+  return noisy_samples
 
 def find_min_max():
   min_time = 41241

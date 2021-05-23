@@ -41,7 +41,6 @@ class ConvNet(nn.Module):
         return first_layer,conv_x,output_x
       return output_x
 
-
 def classification(prediction):
   classified = torch.argmax(prediction, dim = 1)
   return classified

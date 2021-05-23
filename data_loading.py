@@ -48,7 +48,8 @@ def load_samples(model_folder,sampling_rate = 16000,
                  padding = True, 
                  truncating = True, 
                  normal = True,
-                 statement_type = [1,2] ,duration = 2):
+                 statement_type = [1,2] ,duration = 2,
+                 Noisfy = True):
     '''
     Every sample in the dataset and pre-process it. 
     NOTE: this is only applicable for clean dataset at the moment
@@ -128,7 +129,20 @@ def load_samples(model_folder,sampling_rate = 16000,
               if padding and diff_duration < 0:
                   padded_sample = pre_pad(truncated_sample, int(duration * sampling_rate))
                 
-        
+              if Noisfy:
+                  thing = np.random.random_sample()
+                  if thing < 0.2:
+                      color = NoiseColour.White
+                  elif thing < 0.4:
+                        color = NoiseColour.Brown
+                  elif thing < 0.6:
+                        color = NoiseColour.Violet
+                  elif thing < 0.8:
+                        color = NoiseColour.Blue
+                  else:
+                        color = NoiseColour.Pink
+                  padded_sample = nosify(padded_sample, colour = color)
+                  print("Here")
               spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
         
               target = target_generation(sample_name)
@@ -160,7 +174,6 @@ def load_noisy_samples(model_folder):
               y.append(target)
     
     return X, y
-
 
 def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
     '''
