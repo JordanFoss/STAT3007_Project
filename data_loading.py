@@ -49,7 +49,7 @@ def load_samples(model_folder,sampling_rate = 16000,
                  truncating = True, 
                  normal = True,
                  statement_type = [1,2] ,duration = 2,
-                 Noisfy = True):
+                 Noisfy = False):
     '''
     Every sample in the dataset and pre-process it. 
     NOTE: this is only applicable for clean dataset at the moment
