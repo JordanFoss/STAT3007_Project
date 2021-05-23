@@ -36,7 +36,7 @@ def nosify(samples, noise_level = 1, colour = NoiseColour.White):
   if colour == NoiseColour.White:
     noise = torch.randn_like(samples)
   else:
-    noise = torch.from_numpy(cn.powerlaw_psd_gaussian(exponent = colour, size = samples.shape[1])).float()
+    noise = torch.from_numpy(cn.powerlaw_psd_gaussian(exponent = colour, size = samples.shape[0])).float()
 
   scaled_noise = noise * torch.mean(torch.abs(samples)) * noise_level
   
