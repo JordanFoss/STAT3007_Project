@@ -7,7 +7,7 @@ from pre_process import *
 
 class ConvNet_RGB(nn.Module):
     def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
-        super(ConvNet, self).__init__()
+        super(ConvNet_RGB, self).__init__()
         self.flatten = nn.Flatten()
         self.conv1 = nn.Conv2d(3, filter_num, kernel_size = (2,3))
         self.conv2 = nn.Sequential(nn.ReLU(),
