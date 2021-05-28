@@ -265,6 +265,45 @@ def data_gen(sample, sampling_rate ,duration):
 
     return spectrogram
 
+def RGB_data_gen(sample, sampling_rate ,duration):
+    '''
+    This function generates the data for deep learning uses.
+    It pre-processes each raw audio sample by:
+        1. truncate silence
+        2. normalise waveform
+        3. pre-pad or crop to duration
+        4. compute  mel-spectrogram
+
+    Parameters
+    ----------
+    sample : numpy.array
+        audio samples
+    sampling_rate : int
+        sampling rate of audio
+    duration : int
+        duration to keep or pre-pad to
+
+    Returns
+    -------
+    spectrogram : numpy.ndarray
+        mel-spectrogram of samples
+
+    '''
+    
+    truncated_sample = truncate_silence(sample)
+    #truncated_sample = amp_normalisation(truncated_sample)
+    
+    total_duration = truncated_sample.shape[0]
+    diff_duration = total_duration - (duration * sampling_rate)
+    
+    padded_sample = truncated_sample
+    if diff_duration < 0:
+        padded_sample = pre_pad(truncated_sample, int(duration * sampling_rate))
+      
+    spectrogram = mel_spectral_decomposition(padded_sample[:int(sampling_rate * duration)], sampling_rate)
+
+    return spectrogram
+
 def jordan_gen(sample, sampling_rate ,duration):
     '''
     This function generates the data for deep learning uses.
