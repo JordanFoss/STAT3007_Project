@@ -36,10 +36,12 @@ Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wa
 <br>
 The 5 emotions: calm (02), happy(03), sad(04), angry(05), suprised(08)
 
-## Architecure we are currently looking at:
-1. Compressed feature extractor via Denosing autoencoder + classifying network
-2. baseline model: pure CNN (trained on clean data or augemented nosiy data)
-3. Attempting if have time: CNN + RNN (https://ieeexplore.ieee.org/abstract/document/7820699 )
+## Architecture included in our report:
+1. Pure CNN
+2. CNN + LSTM
+3. CNN + RGB
+4. Autoencoder
+
 
 ## Integrating Colab with Github
 The following link shows all the available <code>.ipynb</code> files from our repo that can be opened by colab:
@@ -47,5 +49,5 @@ https://colab.research.google.com/github/JordanFoss/STAT3007_Project
 
 More details can be found in <code>colab-github-demo.ipynb</code>
 
-##Presentation Slides
+## Presentation Slides
 https://docs.google.com/presentation/d/1QSJ8ocBKJbPoVOcoXiKNEMI355Wn7ljikF_xhB7_KaM/edit#slide=id.p
