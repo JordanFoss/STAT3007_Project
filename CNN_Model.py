@@ -6,10 +6,10 @@ import numpy as np
 from pre_process import *
 
 class ConvNet_RGB(nn.Module):
-    def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
+    def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3), channels = 3):
         super(ConvNet_RGB, self).__init__()
         self.flatten = nn.Flatten()
-        self.conv1 = nn.Conv2d(3, filter_num, kernel_size = (2,3))
+        self.conv1 = nn.Conv2d(channels, filter_num, kernel_size = (2,3))
         self.conv2 = nn.Sequential(nn.ReLU(),
             nn.MaxPool2d(kernel_size=(1,2), stride = 2),
             nn.Dropout(0.25),
