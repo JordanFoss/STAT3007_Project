@@ -24,6 +24,46 @@ target_map = {'02':0,'03':1,'04':2,'05':3,'08':4}
 
 #Full Target Map
 #target_map = {'01':0,'02':1,'03':2,'04':3,'05':4,'06':5,'07':6,'08':7}
+#Spectrogram is n x 1 x 128 x 63 size image, jet is 64x3 64 colour map
+def Make_All_RGB(spectrograms, jet):
+
+  RGB_images = []
+  image_num = 0
+
+  for image in spectrograms:
+    maxDB = np.max(image)
+    minDB = np.min(image)
+    interval_step = (maxDB - minDB)/64
+    intervals = [(minDB + x * interval_step, minDB + (x + 1) * interval_step) for x in range(64)]
+    print(image_num)
+    spectrogram = image[0]
+    red_image = []
+    green_image = []
+    blue_image = []
+
+    for row in spectrogram:
+      red_image_row = []
+      green_image_row = []
+      blue_image_row = []
+      for pixel in row:
+        counter = 0
+        for interval in intervals:
+          if interval[0] <= pixel <= interval[1]:
+            index = counter 
+            break
+          counter += 1
+        red_image_row.append(pixel * jet[index][0])
+        green_image_row.append(pixel * jet[index][1])
+        blue_image_row.append(pixel * jet[index][2])
+      red_image.append(red_image_row)
+      green_image.append(green_image_row)
+      blue_image.append(blue_image_row)
+
+    RGB_image = np.array([red_image, green_image, blue_image])
+    RGB_images.append(RGB_image)
+    image_num += 1
+  return np.array(RGB_images)
+
 
 class NoiseColour:
   White = 0
