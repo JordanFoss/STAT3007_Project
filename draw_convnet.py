@@ -144,7 +144,7 @@ def label(xy, text, xy_off=[0, 4]):
 if __name__ == '__main__':
 
     fc_unit_size = 4
-    layer_width = 160
+    layer_width = 200
     flag_omit = True
 
     patches = []
@@ -155,9 +155,9 @@ if __name__ == '__main__':
 
     ############################
     # conv layers
-    size_list = [(128, 63), (126, 61), (63, 30), (61, 28), (30, 14)]
-    num_list = [1, 8, 8, 24, 24]
-    x_diff_list = [0, layer_width+40, layer_width+40, layer_width+40, layer_width+20]
+    size_list = [(128, 63), (126, 61), (63, 30), (61, 28), (30, 14), (32,3)]
+    num_list = [1, 8, 8, 24, 24, 24]
+    x_diff_list = [0, layer_width+100, layer_width+100, layer_width+100, layer_width+120, layer_width]
     text_list = ['Inputs'] + ['Feature\nmaps'] * (len(size_list) - 1)
     loc_diff_list = [[3, -3]] * len(size_list)
 
@@ -181,11 +181,11 @@ if __name__ == '__main__':
 
     ############################
     # in between layers
-    start_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8]]
-    end_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8]]
+    start_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8], [0.4, 0.8]]
+    end_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8], [0.4, 0.8]]
     patch_size_list = [(2, 3), (1, 2), (2, 3), (1, 2)]
     ind_bgn_list = range(len(patch_size_list))
-    text_list = ['Convolution', 'Max-pooling', 'Convolution', 'Max-pooling']
+    text_list = ['Convolution', 'Max-pooling', 'Convolution', 'Max-pooling', 'Flatten']
 
     for ind in range(len(patch_size_list)):
         add_mapping(
