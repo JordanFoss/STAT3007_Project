@@ -261,7 +261,7 @@ def load_new_spectrograms(noisy_base_dir, clean_base_dir):
         print(count)
     
     return np.asarray(noisy_spectrogram), np.asarray(clean_spectrogram), np.asarray(targets)
-        6
+
 def dataset_train_test_split(noisy_spectrograms, clean_spectrograms, targets, train_ratio=[0.6, 0.8], seed=[10,11]):
     '''
     Perform the train test split on noisy spectrograms, clean spectrograms and targets
