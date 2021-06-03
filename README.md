@@ -7,8 +7,8 @@ Before running the notebooks with <code> _training_testing.ipynb</code> or <code
 https://drive.google.com/drive/folders/1n9xwoN4oa4teVaBLyc5bvzuJZ70zhhQk?usp=sharing
 
 # file description
-* <code>_Train_Test.ipynb</code> - a pipeline for training models
-* <code>_Tuning.ipynb</code> - hyperparameter for models
+* <code>model_training/_Train_Test.ipynb</code> - a pipeline for training models
+* <code>model_tuning/_Tuning.ipynb</code> - hyperparameter for models
 
 
 # Audio sample names
