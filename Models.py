@@ -124,7 +124,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-  def __init__(self, filters = 16, kernal_size = (4,2), upsample_size1=(61,27), upsample_size2=(126,60)):
+  def __init__(self, filters = 16, kernal_size = (4,2), upsample_size1=(59,30), upsample_size2=(125,62)):
     super(Decoder, self).__init__()
     (K, S) = (2, 1)
     self.conv = nn.Sequential(nn.ConvTranspose2d(filters,filters, kernel_size = kernal_size),
@@ -141,7 +141,7 @@ class Decoder(nn.Module):
     return x
 
 class Autoencoder(nn.Module):
-  def __init__(self, filters = 16, kernal_size=(4,2), upsample_size1=(61,27), upsample_size2=(126,60)):
+  def __init__(self, filters = 16, kernal_size=(4,2), upsample_size1=(59,30), upsample_size2=(125,62)):
     super(Autoencoder,self).__init__()
     self.filters = filters
     self.kernal_size = kernal_size
