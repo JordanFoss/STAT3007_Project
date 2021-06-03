@@ -6,7 +6,12 @@ Teaching a robot to feel.
 Before running the notebooks with <code> _training_testing.ipynb</code> or <code> _tuning.ipynb </code> in the name, you will first have to create a shortcut to the google drive containing the noisy data. The link to this google drive is:
 https://drive.google.com/drive/folders/1n9xwoN4oa4teVaBLyc5bvzuJZ70zhhQk?usp=sharing
 
-# File names
+# file description
+* <code>_Train_Test.ipynb</code> - a pipeline for training models
+* <code>_Tuning.ipynb</code> - hyperparameter for models
+
+
+# Audio sample names
 Filename layout:emotion-intensity-statement-repetition-actor.wav
 
 * Fearful (06) Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised)
