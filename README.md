@@ -2,12 +2,10 @@
 Teaching a robot to feel. 
 
 Also the filename layout for the audio files is as follows
-Filename example: 03-01-06-01-02-01-12.mp4 (audio-speech-emotion-intensity-statement-repetition-actor)
 
-Audio-only (03) (Always 03 for us for obivous reasons)
-<br>
-Speech (01) (Always 01 for us unless we want to train on singing data)
-<br>
+filename layout:emotion-intensity-statement-repetition-actor.wav
+Filename example: 06-01-02-01-12.mp4 (audio-speech-emotion-intensity-statement-repetition-actor)
+
 Fearful (06) Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised)
 <br>
 Normal intensity (01) Emotional intensity (01 = normal, 02 = strong). NOTE: There is no strong intensity for the 'neutral' emotion.
@@ -17,9 +15,6 @@ Statement "dogs" (02) Statement (01 = "Kids are talking by the door", 02 = "Dogs
 1st Repetition (01 )Repetition (01 = 1st repetition, 02 = 2nd repetition).
 <br>
 12th Actor (12) Actor (01 to 24. Odd numbered actors are male, even numbered actors are female).
-
-
-Jordan's refined filename layout:emotion-intensity-statement-repetition-actor.wav
 
 ## Pre-process steps:
 1. load audio with downsampled sampling rate 16000Hz
