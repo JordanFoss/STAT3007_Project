@@ -144,7 +144,7 @@ def label(xy, text, xy_off=[0, 4]):
 if __name__ == '__main__':
 
     fc_unit_size = 4
-    layer_width = 160
+    layer_width = 240
     flag_omit = True
 
     patches = []
@@ -155,9 +155,10 @@ if __name__ == '__main__':
 
     ############################
     # conv layers
-    size_list = [(128, 63), (126, 61), (63, 30), (61, 28), (30, 14)]
-    num_list = [1, 8, 8, 24, 24]
-    x_diff_list = [0, layer_width+40, layer_width+40, layer_width+40, layer_width+20]
+    size_list = [(128, 63), (126, 60), (63, 30), (61, 27), (30, 13), (28, 10), (30,13), (61,27), (63,30),(126,60),(128,63)]
+
+    num_list = [1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 1]
+    x_diff_list = [0, layer_width+40, layer_width+40, layer_width+40, layer_width+20, layer_width+10, layer_width+10, layer_width+20, layer_width+40, layer_width+40, layer_width+40]
     text_list = ['Inputs'] + ['Feature\nmaps'] * (len(size_list) - 1)
     loc_diff_list = [[3, -3]] * len(size_list)
 
@@ -181,11 +182,11 @@ if __name__ == '__main__':
 
     ############################
     # in between layers
-    start_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8]]
-    end_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8]]
-    patch_size_list = [(2, 3), (1, 2), (2, 3), (1, 2)]
+    start_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4,0.8], [0.4,0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8], [0.4, 0.5]]
+    end_ratio_list = [[0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8], [0.4, 0.5], [0.4,0.8], [0.4,0.5], [0.4, 0.8], [0.4, 0.5], [0.4, 0.8], [0.4, 0.5]]
+    patch_size_list = [(4, 2), (2, 2), (4, 2), (2, 2), (4, 2), (4, 2), (61, 28), (4, 2), (126, 61), (4, 2)]
     ind_bgn_list = range(len(patch_size_list))
-    text_list = ['Convolution', 'Max-pooling', 'Convolution', 'Max-pooling']
+    text_list = ['Convolution', 'Max-pooling', 'Convolution', 'Max-pooling', 'Convolution', 'ConvInverse', 'Upsampling', 'ConvInverse', 'Upsampling', 'ConvInverse']
 
     for ind in range(len(patch_size_list)):
         add_mapping(
@@ -197,36 +198,36 @@ if __name__ == '__main__':
         )
 
 
-    ############################
-    # fully connected layers
-    size_list = [(fc_unit_size, fc_unit_size)] * 3
-    num_list = [24*30*14, 1024, 5]
-    num_show_list = list(map(min, num_list, [NumFcMax] * len(num_list)))
-    x_diff_list = [sum(x_diff_list) + layer_width, layer_width, layer_width]
-    top_left_list = np.c_[np.cumsum(x_diff_list), np.zeros(len(x_diff_list))]
-    loc_diff_list = [[fc_unit_size, -fc_unit_size]] * len(top_left_list)
-    text_list = ['Hidden\nUnits'] * (len(size_list) - 1) + ['Outputs']
+    # ############################
+    # # fully connected layers
+    # size_list = [(fc_unit_size, fc_unit_size)] * 3
+    # num_list = [24*30*14, 1024, 5]
+    # num_show_list = list(map(min, num_list, [NumFcMax] * len(num_list)))
+    # x_diff_list = [sum(x_diff_list) + layer_width, layer_width, layer_width]
+    # top_left_list = np.c_[np.cumsum(x_diff_list), np.zeros(len(x_diff_list))]
+    # loc_diff_list = [[fc_unit_size, -fc_unit_size]] * len(top_left_list)
+    # text_list = ['Hidden\nUnits'] * (len(size_list) - 1) + ['Outputs']
 
-    for ind in range(len(size_list)):
-        if flag_omit:
-            add_layer_with_omission(patches, colors, size=size_list[ind],
-                                    num=num_list[ind],
-                                    num_max=NumFcMax,
-                                    num_dots=NumDots,
-                                    top_left=top_left_list[ind],
-                                    loc_diff=loc_diff_list[ind])
-        else:
-            add_layer(patches, colors, size=size_list[ind],
-                      num=num_show_list[ind],
-                      top_left=top_left_list[ind],
-                      loc_diff=loc_diff_list[ind])
-        label(top_left_list[ind], text_list[ind] + '\n{}'.format(
-            num_list[ind]))
+    # for ind in range(len(size_list)):
+    #     if flag_omit:
+    #         add_layer_with_omission(patches, colors, size=size_list[ind],
+    #                                 num=num_list[ind],
+    #                                 num_max=NumFcMax,
+    #                                 num_dots=NumDots,
+    #                                 top_left=top_left_list[ind],
+    #                                 loc_diff=loc_diff_list[ind])
+    #     else:
+    #         add_layer(patches, colors, size=size_list[ind],
+    #                   num=num_show_list[ind],
+    #                   top_left=top_left_list[ind],
+    #                   loc_diff=loc_diff_list[ind])
+    #     label(top_left_list[ind], text_list[ind] + '\n{}'.format(
+    #         num_list[ind]))
 
-    text_list = ['Flatten\n', 'FC', 'FC']
+    # text_list = ['Flatten\n', 'FC', 'FC']
 
-    for ind in range(len(size_list)):
-        label(top_left_list[ind], text_list[ind], xy_off=[-50, -135])
+    # for ind in range(len(size_list)):
+    #     label(top_left_list[ind], text_list[ind], xy_off=[-50, -135])
 
     ############################
     for patch, color in zip(patches, colors):
