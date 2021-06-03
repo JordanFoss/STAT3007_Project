@@ -25,27 +25,24 @@ from sklearn.model_selection import train_test_split
 from pre_process import *
 
 class DatasetWrapper(Dataset):
-    '''
-    A Wrapper for data to form a dataset 
-    '''
-    def __init__(self, X, y):
-        self.X, self.y = X, y
-      
-    def __len__(self):
-        return len(self.X)
-      
-    def __getitem__(self, idx):
-        return self.X[idx], self.y[idx]
+      def __init__(self, X, y):
+          self.X, self.y = X, y
     
-    def change_type(self, dtype):
+      def __len__(self):
+          return len(self.X)
+    
+      def __getitem__(self, idx):
+          return self.X[idx], self.y[idx]
       
-        return DatasetWrapper(self.X.type(dtype),self.y.type(dtype))
+      def change_type(self, dtype):
     
-    def dataset(self):
-        return DatasetWrapper(self.X,self.y)
-    
-    def get_data(self):
-        return self.X, self.y
+          return DatasetWrapper(self.X.type(dtype),self.y.type(dtype))
+      
+      def dataset(self):
+          return DatasetWrapper(self.X,self.y)
+      
+      def get_data(self):
+          return self.X, self.y
       
 def load_samples(model_folder,sampling_rate = 16000,
                  padding = True, 
