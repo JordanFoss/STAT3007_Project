@@ -6,7 +6,7 @@ import numpy as np
 from pre_process import *
 
 class ConvNet_RGB(nn.Module):
-    def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3), channels = 3):
+    def __init__(self, contain_linear = False, filter_num = 8, kernel_size = (2,3), channels = 3):
         super(ConvNet_RGB, self).__init__()
         self.flatten = nn.Flatten()
         self.conv1 = nn.Conv2d(channels, filter_num, kernel_size = (2,3))
@@ -39,10 +39,46 @@ class ConvNet_RGB(nn.Module):
       if inspect_feature:
         return first_layer,conv_x,output_x
       return output_x
+    
+    
+class ConvNet_MultiChannel(nn.Module):
+    def __init__(self, contain_linear = False, filter_num = 8, kernel_size = (2,3), channels = 8):
+        super(ConvNet_MultiChannel, self).__init__()
+        self.flatten = nn.Flatten()
+        self.conv1 = nn.Conv2d(channels, filter_num, kernel_size = (2,3))
+        self.conv2 = nn.Sequential(nn.ReLU(),
+            nn.MaxPool2d(kernel_size=(1,2), stride = 2),
+            nn.Dropout(0.25),
+            nn.Conv2d(filter_num, 24, kernel_size = (2,3)),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=(1,2), stride = 2),
+        )
+
+        self.contain_linar = contain_linear
+
+        if contain_linear:
+          self.linear = nn.Sequential(
+              nn.Linear(24*6*2, 1024),
+              nn.Linear(1024, 5),
+          )
+
+    def forward(self, x, inspect_feature = False):
+
+      first_layer = self.conv1(x)
+      conv_x = self.conv2(first_layer)
+
+      output_x = conv_x
+      if self.contain_linar:
+        conv_x_flat  = self.flatten(conv_x)
+        output_x = self.linear(conv_x_flat)
+      
+      if inspect_feature:
+        return first_layer,conv_x,output_x
+      return output_x
 
 
 class ConvNet(nn.Module):
-    def __init__(self, contain_linear = False, filter_num = 14, kernel_size = (2,3)):
+    def __init__(self, contain_linear = False, filter_num = 8, kernel_size = (2,3)):
         super(ConvNet, self).__init__()
         self.flatten = nn.Flatten()
         self.conv1 = nn.Conv2d(1, filter_num, kernel_size = (2,3))
@@ -88,8 +124,23 @@ def accuracy(y_pred, y_test):
   accuracy_percent = torch.count_nonzero(accuracy)/accuracy.shape[0]
   return accuracy_percent.item()
 
-def train_model(data_train, data_test, net, loss, nepoch ,lr = 0.01, batch_size = -1, use_cuda = False, print_output = True):
+def train_model(data_train, 
+                data_test, 
+                net, loss, 
+                nepoch , 
+                lr = 0.01, 
+                batch_size = -1, 
+                momentum = 0,
+                use_cuda = False, 
+                print_output = True, 
+                optimiser = 'SGD'):
 
+  # setting up arrays for recording
+  test_acc = []
+  avg_acc = []
+
+  test_loss = []
+  avg_loss = []
   # appropriate data type for CPU or GPU
   device = None
   if use_cuda and torch.cuda.is_available():
@@ -99,35 +150,68 @@ def train_model(data_train, data_test, net, loss, nepoch ,lr = 0.01, batch_size 
   else:
     dtype = torch.FloatTensor
 
-  optimizer = optim.SGD(net.parameters(), lr = lr)
-  data_train = data_train.dataset.change_type(dtype)
-  data_test = data_test.dataset.change_type(dtype)
+  if optimiser == 'SGD':
+    optimizer = optim.SGD(net.parameters(), lr = lr, momentum = momentum)
+  else:
+    optimizer = optim.Adam(net.parameters(), lr = lr, momentum = momentum)
+  data_train = data_train.change_type(dtype)
+  data_test = data_test.change_type(dtype)
+
+  X_test,y_test = data_test.get_data()
+
+  y_test = y_test.type(torch.LongTensor)
+  if device != None:
+    y_test = y_test.type(torch.cuda.LongTensor)
 
   data_loader = DataLoader(data_train, batch_size = batch_size, shuffle = True)
 
   for epoch in range(nepoch):
+    batch_acc = []
+    batch_loss = []
     for X_batch, y_batch in data_loader:
+      
+
       y_batch = y_batch.type(torch.LongTensor)
       if use_cuda and device != None:
         X_batch = X_batch.to(device)
         y_batch = y_batch.to(device)
         y_batch = y_batch.type(torch.cuda.LongTensor)
 
-      optimizer.zero_grad()
+        
 
-      # since all our values are negative, we convert them to positive
+      optimizer.zero_grad()
 
 
       pred = net(X_batch)
       Rn = loss(pred, y_batch)
+      accur = accuracy(pred,y_batch)
+
+      batch_acc.append(accur)
+      batch_loss.append(Rn.to(torch.device('cpu')).detach().numpy())
+
       Rn.backward()
       optimizer.step()
+
+
+    avg_batch_loss = np.mean(batch_loss)
+    avg_batch_acc = np.mean(batch_acc)
+    avg_acc.append(avg_batch_acc)
+    avg_loss.append(avg_batch_loss)
+
+    pred = net(X_test)
+    Rn = loss(pred, y_test)
+    accur = accuracy(pred,y_test)
+    test_acc.append(accur)
+    test_loss.append(Rn.to(torch.device('cpu')).detach().numpy())
+
 
     if print_output:
       print('epoch:', epoch)
       print('loss:',Rn.item())
       print('------------')
+    
 
   print('final loss:', Rn.item())
 
-  return net
+  return net, avg_loss, avg_acc, test_loss, test_acc
+

@@ -144,6 +144,7 @@ def label(xy, text, xy_off=[0, 4]):
 if __name__ == '__main__':
 
     fc_unit_size = 4
+
     layer_width = 240
     flag_omit = True
 
@@ -159,6 +160,7 @@ if __name__ == '__main__':
 
     num_list = [1, 16, 16, 16, 16, 16, 16, 16, 16, 16, 1]
     x_diff_list = [0, layer_width+40, layer_width+40, layer_width+40, layer_width+20, layer_width+10, layer_width+10, layer_width+20, layer_width+40, layer_width+40, layer_width+40]
+
     text_list = ['Inputs'] + ['Feature\nmaps'] * (len(size_list) - 1)
     loc_diff_list = [[3, -3]] * len(size_list)
 
@@ -187,7 +189,6 @@ if __name__ == '__main__':
     patch_size_list = [(4, 2), (2, 2), (4, 2), (2, 2), (4, 2), (4, 2), (61, 28), (4, 2), (126, 61), (4, 2)]
     ind_bgn_list = range(len(patch_size_list))
     text_list = ['Convolution', 'Max-pooling', 'Convolution', 'Max-pooling', 'Convolution', 'ConvInverse', 'Upsampling', 'ConvInverse', 'Upsampling', 'ConvInverse']
-
     for ind in range(len(patch_size_list)):
         add_mapping(
             patches, colors, start_ratio_list[ind], end_ratio_list[ind],
