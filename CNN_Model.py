@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 
 class ConvNet_RGB(nn.Module):
     def __init__(self, contain_linear = False, filter_num = 8, kernel_size = (2,3), channels = 3):
@@ -106,3 +107,41 @@ class ConvNet(nn.Module):
       if inspect_feature:
         return first_layer,conv_x,output_x
       return output_x
+  
+# RNN combined with CNN
+class LRCN(nn.Module):
+    def __init__(self, CNN, shape = (24,32,3)):
+        super(LRCN, self).__init__()
+
+        self.cnn = CNN
+        self.shape = shape
+
+        channel, freq, times = shape
+        self.lstm_layers = nn.LSTM(freq*channel*times,256,num_layers = 2, bidirectional = True)
+        self.linear = nn.Sequential(nn.Linear(256*2, 5))
+        self.flatten = nn.Flatten()
+
+    def forward(self, x, step_size = 21, use_cuda = False):
+
+      if use_cuda:
+        h_t = torch.zeros(4,x.shape[0] ,256, dtype=torch.float).to(x.device)
+        c_t = torch.zeros(4,x.shape[0], 256, dtype=torch.float).to(x.device)
+
+      else:
+        h_t = torch.zeros(4,x.shape[0], 256, dtype=torch.float)
+        c_t = torch.zeros(4,x.shape[0], 256, dtype=torch.float)
+      
+      look_ahead_time = 21
+      for current_time in range(0,x.shape[-1], step_size):
+
+        x_t = x[:,:,:,current_time:current_time+look_ahead_time]
+        conv_x = self.cnn(x_t)
+
+        conv_x_flat =  self.flatten(conv_x)
+
+        conv_x_flat = conv_x_flat.reshape(1,conv_x_flat.shape[0],conv_x_flat.shape[1])
+
+        output, (h_t, c_t) = self.lstm_layers(conv_x_flat, (h_t, c_t))
+
+      decision_vec = self.linear(output[0])
+      return decision_vec
