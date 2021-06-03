@@ -35,7 +35,6 @@ def Make_All_RGB(spectrograms, jet):
     minDB = np.min(image)
     interval_step = (maxDB - minDB)/64
     intervals = [(minDB + x * interval_step, minDB + (x + 1) * interval_step) for x in range(64)]
-    print(image_num)
     spectrogram = image[0]
     red_image = []
     green_image = []
