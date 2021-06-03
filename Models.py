@@ -102,3 +102,54 @@ class LRCN(nn.Module):
 
       decision_vec = self.linear(output[0])
       return decision_vec
+class Encoder(nn.Module):
+  def __init__(self, filters = 16, kernal_size = (4,2)):
+    super(Encoder, self).__init__()
+    (K, S) = (5, 1)
+    self.conv = nn.Sequential(nn.Conv2d(1, filters, kernel_size= kernal_size, stride = 1),
+                              nn.ReLU(),
+                              nn.MaxPool2d(kernel_size = 2),
+                              nn.ReLU(),
+                              nn.Conv2d(filters,filters,kernel_size= kernal_size, stride = 1),
+                              nn.ReLU(),
+                              nn.MaxPool2d(kernel_size = 2),
+                              nn.Conv2d(filters,filters,kernel_size= kernal_size, stride = 1),
+                              nn.ReLU()
+                              )
+    
+  def forward(self, x):
+    x = self.conv(x)
+    return x
+
+
+
+class Decoder(nn.Module):
+  def __init__(self, filters = 16, kernal_size = (4,2), upsample_size1=(61,27), upsample_size2=(126,60)):
+    super(Decoder, self).__init__()
+    (K, S) = (2, 1)
+    self.conv = nn.Sequential(nn.ConvTranspose2d(filters,filters, kernel_size = kernal_size),
+                              nn.ReLU(),
+                              nn.Upsample(size = upsample_size1),
+                              nn.ConvTranspose2d(filters,filters, kernel_size = kernal_size),
+                              nn.ReLU(),
+                              nn.Upsample(size = upsample_size2),
+                              nn.ConvTranspose2d(filters,1, kernel_size = kernal_size),
+                              )
+    
+  def forward(self, x):
+    x = self.conv(x)
+    return x
+
+class Autoencoder(nn.Module):
+  def __init__(self, filters = 16, kernal_size=(4,2), upsample_size1=(61,27), upsample_size2=(126,60)):
+    super(Autoencoder,self).__init__()
+    self.filters = filters
+    self.kernal_size = kernal_size
+    self.upsample_size1 = upsample_size1
+    self.upsample_size2 = upsample_size2
+    self.encoder = Encoder(filters, kernal_size)
+    self.decoder = Decoder(filters, kernal_size, upsample_size1, upsample_size2)
+  def forward(self, x):
+    x = self.encoder(x)
+    x = self.decoder(x)
+    return x
