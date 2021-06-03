@@ -51,3 +51,7 @@ More details can be found in <code>colab-github-demo.ipynb</code>
 
 ## Presentation Slides
 https://docs.google.com/presentation/d/1QSJ8ocBKJbPoVOcoXiKNEMI355Wn7ljikF_xhB7_KaM/edit#slide=id.p
+
+## Instructions for runing training and testing files
+Before running the notebooks with training_testing in the name, you will first have to create a shortcut to the google drive containing the noisy data. The link to this google drive is:
+https://drive.google.com/drive/folders/1n9xwoN4oa4teVaBLyc5bvzuJZ70zhhQk?usp=sharing
