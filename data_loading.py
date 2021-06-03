@@ -209,6 +209,110 @@ def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
         
     return data_sets
         
-        
-        
+def load_new_spectrograms(noisy_base_dir, clean_base_dir):
+    '''
+    Generating noisy spectrograms for audio data in noisy directory.
+    Generate corresponding clean spectrograms by searching in the clean directory.
 
+    Parameters
+    ----------
+    noisy_base_dir : str
+        directory containing noisy audios
+        
+    clean_base_dir : str
+        directory containing clean audios
+    
+    Returns
+    -------
+    noisy_spectrograms : numpy array of noisy spectrograms
+    clean_spectrograms : numpy array of clean spectrograms   
+    targets : numpy array of targets of each piece of noisy/clean data
+
+    '''
+    
+    noisy_spectrogram = []
+    clean_spectrogram = []
+    targets = []
+    count = 0
+    for noisy_sample_path in glob.glob(noisy_base_dir + '/*.wav'):
+        basename = os.path.basename(noisy_sample_path).split('_')[0]
+        series = basename.split('-')
+        if int(series[-1]) % 2 == 0:
+            clean_dir = os.path.join(clean_base_dir, 'Female')
+        else:
+            clean_dir = os.path.join(clean_base_dir, 'Male')
+        clean_file = os.path.join(clean_dir, 'Actor_'+series[-1])
+        clean_file = os.path.join(clean_file, basename+'.wav')
+
+        # generate target
+        target = target_generation(basename)
+        # noisy spectrogram
+        noisy_sample, noisy_sampling_rate = librosa.load(noisy_sample_path, sr = 16000)
+        noisy_mel_spectrogram = data_gen(noisy_sample, noisy_sampling_rate ,2)
+        # clean spectrogram
+        clean_sample, clean_sampling_rate = librosa.load(clean_file, sr=16000)
+        clean_mel_spectrogram = data_gen(clean_sample, clean_sampling_rate, 2)
+
+        noisy_spectrogram.append(noisy_mel_spectrogram)
+        clean_spectrogram.append(clean_mel_spectrogram)
+        targets.append(target)
+
+        count += 1
+        print(count)
+    
+    return np.asarray(noisy_spectrogram), np.asarray(clean_spectrogram), np.asarray(targets)
+        6
+def dataset_train_test_split(noisy_spectrograms, clean_spectrograms, targets, train_ratio=[0.6, 0.8], seed=[10,11]):
+    '''
+    Perform the train test split on noisy spectrograms, clean spectrograms and targets
+    We typically perform the split twice, the first time on the whole dataset, the second
+    time is performed on the test set of the first time.
+
+    Parameters
+    ----------
+    noisy_spectrograms : numpy array
+        array containing all noisy spectrograms
+        
+    clean_base_dir : numpy array
+        directory containing clean audios
+    
+    targets : numpy array
+        array of targets 
+    
+    train_ratio: list
+        A list whose length indicates the number of split to do (we only need 2)
+        the number indicates the training ratio each time
+        
+    seed: list
+        A list containing the random state of each split
+    Returns
+    -------
+
+    '''
+    # The length is determined by the number of splits
+    noisy_train_list = []
+    clean_train_list = []
+    target_train_list = []
+    
+    noisy_test_list = []
+    clean_test_list = []
+    target_test_list = []
+    
+    for i in range(len(train_ratio)):
+        noisy_train, noisy_test, clean_train, clean_test, target_train, target_test = train_test_split(
+        noisy_spectrograms, clean_spectrograms, targets, train_size=train_ratio[i], random_state=seed[i])
+        
+        noisy_train_list.append(noisy_train)
+        clean_train_list.append(clean_train)
+        target_train_list.append(target_train)
+        
+        noisy_test_list.append(noisy_test)
+        clean_test_list.append(clean_test)
+        target_test_list.append(target_test)
+        
+        # next split will be done on the test data
+        noisy_spectrograms = noisy_test
+        clean_spectrograms = clean_test
+        targets = target_test
+    
+    return noisy_train_list, clean_train_list, target_train_list, noisy_test_list, clean_test_list, target_test_list
