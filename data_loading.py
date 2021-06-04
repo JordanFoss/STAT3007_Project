@@ -213,7 +213,7 @@ def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
     return data_sets
 
 
-def load_train_and_test_spectrograms(noisy_base_dir, clean_base_dir, 
+def load_train_and_test_spectrograms_by_actors(noisy_base_dir, clean_base_dir, 
                                      actors_in_train= ['01','02','03','04',
                                                        '05','06','07','08',
                                                        '09','10','11','12',
