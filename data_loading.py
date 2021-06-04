@@ -211,6 +211,81 @@ def load_sets(X,y,train_ratio = [0.7,0.7], seed = [10,11]):
         X,y = X_test,y_test
         
     return data_sets
+
+
+def load_train_and_test_spectrograms(noisy_base_dir, clean_base_dir, 
+                                     actors_in_train= ['01','02','03','04',
+                                                       '05','06','07','08',
+                                                       '09','10','11','12',
+                                                       '13','14','15','16'],
+                                     actors_in_test= ['17','18','19','20',
+                                                      '21','22','23','24']):
+    '''
+    Generate array of noisy training spectrograms, 
+             array of noisy testing spectrograms, 
+             array of clean training spectrograms,
+             array of clean testing spectrograms.
+             array of training targets
+             array of testing targets
+             
+    Parameters
+    ----------
+    noisy_base_dir : str
+        directory containing noisy audios
+        
+    clean_base_dir : str
+        directory containing clean audios
+    
+    actors_in_train: actors to put in training set
+    actors_in_test: actors to put in testing set
+    '''
+    
+
+    noisy_train = []
+    noisy_test = []
+    clean_train = []
+    clean_test = []
+    target_train = []
+    target_test = []
+
+    for gender_folder in glob.glob(noisy_base_dir + '/*'):
+        noisy_dir = os.path.join(noisy_base_dir, gender_folder.split('/')[-1])
+        clean_dir = os.path.join(clean_base_dir, gender_folder.split('/')[-1])
+        for actor_folder in glob.glob(gender_folder + '/*'):
+            print(os.path.basename(actor_folder).split('_')[-1])
+            if (os.path.basename(actor_folder).split('_')[-1] not in actors_in_train and 
+                os.path.basename(actor_folder).split('_')[-1] not in actors_in_test):
+                continue
+
+            noisy_dir2 = os.path.join(noisy_dir, actor_folder.split('/')[-1])
+            clean_dir2 = os.path.join(clean_dir, actor_folder.split('/')[-1])
+            for noisy_sample_path in glob.glob(actor_folder + '/*.wav'):
+                sample_base = noisy_sample_path.split('/')[-1]
+                sample_name = sample_base.split('_')[0]
+                
+                # generate target
+                target = target_generation(sample_name)
+                # noisy spectrogram
+                noisy_sample, noisy_sampling_rate = librosa.load(noisy_sample_path, sr = 16000)
+                noisy_mel_spectrogram = data_gen(noisy_sample, noisy_sampling_rate ,2)
+                # clean spectrogram
+                clean_file = os.path.join(clean_dir2, sample_name + '.wav')
+                clean_sample, clean_sampling_rate = librosa.load(clean_file, sr=16000)
+                clean_mel_spectrogram = data_gen(clean_sample, clean_sampling_rate, 2)
+                # put in train or test array depends on the actor
+                actor = sample_name.split('-')[-1]
+                # print(actor)
+                if actor in actors_in_train:
+                    noisy_train.append(noisy_mel_spectrogram)
+                    clean_train.append(clean_mel_spectrogram)
+                    target_train.append(target)
+                else:
+                    noisy_test.append(noisy_mel_spectrogram)
+                    clean_test.append(clean_mel_spectrogram)
+                    target_test.append(target)
+            print(os.path.basename(actor_folder) + ' done')
+    
+    return np.asarray(noisy_train), np.asarray(noisy_test), np.asarray(clean_train),np.asarray(clean_test), np.asarray(target_train), np.asarray(target_test)
         
 def load_new_spectrograms(noisy_base_dir, clean_base_dir):
     '''
